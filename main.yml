@@ -1,28 +1,3 @@
-# mbm149-CloudResume-Frontend
-
-
-# GitHub's introduction of OIDC tokens into GitHub Actions Workflows, you can authenticate from GitHub Actions to Google Cloud using Workload Identity Federation, removing the need to export a long-lived JSON service account key.
-
-export GITHUB_REPO=mbm149/mbm149-CloudResume-Frontend
-export PROJECT_ID=copper-moon-370604
-export SERVICE_ACCOUNT=github-actions-service-account
-export WORKLOAD_IDENTITY_POOL=gh-pool 
-export WORKLOAD_IDENTITY_PROVIDER=gh-provider
-
-
-gcloud services enable \
-   storage-component.googleapis.com \
-   cloudbuild.googleapis.com \
-   iamcredentials.googleapis.com
-
-
-echo $WORKLOAD_IDENTITY_PROVIDER_LOCATION
-projects/857089065468/locations/global/workloadIdentityPools/gh-pool/providers/gh-provider
-
-echo $SERVICE_ACCOUNT@$PROJECT_ID.iam.gserviceaccount.com
-github-actions-service-account@my-project-githubaction.iam.gserviceaccount.com
-
-
 # This is a basic workflow to help you get started with Actions
 name: CD
 
@@ -33,6 +8,7 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
+
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -62,9 +38,18 @@ jobs:
           workload_identity_provider: projects/857089065468/locations/global/workloadIdentityPools/gh-pool/providers/gh-provider
           # Replace with your GitHub Service Account
           service_account: github-actions-service-account@my-project-githubaction.iam.gserviceaccount.com
-       
-      - id: 'upload-file'
+
+      - name: Terraform Init
+        uses: hashicorp/terraform-github-actions/init@v0.4.0
+        
+      - name: Terraform Apply
+        uses: hashicorp/terraform-github-actions/apply@v0.4.0
+      #  with:
+      #     path: 'staticweb.tf'
+
+      - id: 'upload-file-test-dir'
         uses: 'google-github-actions/upload-cloud-storage@v1'
         with:
-           path: '/hello/file.txt'    
-           destination: 'us.artifacts.my-project-githubaction.appspot.com/file.txt'
+           path: 'test'
+           destination: 'mbrandmcloudresume01'
+
