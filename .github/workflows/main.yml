@@ -1,1 +1,66 @@
+# This is a basic workflow to help you get started with Actions
+name: CD
 
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the main branch
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "deploy"
+  deploy:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Add "id-token" with the intended permissions.
+    permissions:
+      contents: "read"
+      id-token: "write"
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+
+      - id: "auth"
+        name: "Authenticate to Google Cloud"
+        uses: "google-github-actions/auth@v0"
+        with:
+          # Replace with your Workload Identity Provider Location
+          workload_identity_provider: projects/1063045670882/locations/global/workloadIdentityPools/gh-pool/providers/gh-provider
+          # Replace with your GitHub Service Account
+          service_account: github-actions-service-account@copper-moon-370604.iam.gserviceaccount.com
+
+      - name: Terraform Init
+        uses: hashicorp/terraform-github-actions/init@v0.4.0
+        
+      - name: Terraform Apply
+        uses: hashicorp/terraform-github-actions/apply@v0.4.0
+      #  with:
+      #     path: 'staticweb.tf'
+
+      - id: 'upload-file-test-dir-css'
+        uses: 'google-github-actions/upload-cloud-storage@v1'
+        with:
+           path: 'css'
+           destination: 'mbrandmcloudresume01'
+
+      - id: 'upload-file-test-dir-js'
+        uses: 'google-github-actions/upload-cloud-storage@v1'
+        with:
+           path: 'js'
+           destination: 'mbrandmcloudresume01'
+           
+      - id: 'upload-file-test-dir-photo'
+        uses: 'google-github-actions/upload-cloud-storage@v1'
+        with:
+           path: 'photo'
+           destination: 'mbrandmcloudresume01'
