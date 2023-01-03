@@ -51,16 +51,16 @@ jobs:
         uses: 'google-github-actions/upload-cloud-storage@v1'
         with:
            path: 'css'
-           destination: 'mbrandmcloudresume01'
+           destination: 'mbrandmcloudresume.com'
 
       - id: 'upload-file-test-dir-js'
         uses: 'google-github-actions/upload-cloud-storage@v1'
         with:
            path: 'js'
-           destination: 'mbrandmcloudresume01'
+           destination: 'mbrandmcloudresume.com'
            
       - id: 'upload-file-test-dir-photo'
         uses: 'google-github-actions/upload-cloud-storage@v1'
         with:
            path: 'photo'
-           destination: 'mbrandmcloudresume01'
+           destination: 'mbrandmcloudresume.com'
