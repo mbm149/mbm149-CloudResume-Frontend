@@ -562,3 +562,7 @@ img {
 /* Show the dropdown menu on hover */
 .dropdown:hover .dropdown-content {display: block;}
 
+.container {
+  margin-inline: auto;
+  width: min(90%,70.5rem);
+}
